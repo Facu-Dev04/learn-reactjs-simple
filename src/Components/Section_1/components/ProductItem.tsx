@@ -12,4 +12,4 @@ const ProductItem = ({ props }: { props: PropsProduct }) => {
         </div>
     )
 }
-export default ProductItem
+export default ProductItem;
