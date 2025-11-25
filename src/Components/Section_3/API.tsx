@@ -1,40 +1,50 @@
 import { useEffect, useState } from "react"
 
-interface Propmt {
-    completed: boolean
-    id: number
-    title: string
-    userId: number
+interface RootObject {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
-const ConsumerAPI = () => {
-    const [info, setInfo] = useState<Propmt | null>(null);
-    const [loading, setLoading] = useState(true);
+const ConsumerApi = () => {
+    const [data, setData] = useState<RootObject | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
+    // Consumimos una API con useEffect y Async Await
     useEffect(() => {
-        fetch("https://jsonplaceholder.typicode.com/todos/1")
-            .then(res => res.json())
-            .then(data => {
-                setInfo(data)
-                setLoading(false)
-            })
+        const fechData = async () => {
+            try {
+                const res = await fetch("https://jsonplaceholder.typicode.com/todos/10000")
+                if(!res.ok ) throw new Error("Error al consumir la API")
+                const data = await res.json()
+                setData(data)
+            } catch (error) {
+                if (error instanceof Error) {
+                    setError(error.message)
+                }
+                else {
+                    setError("Error desconocido")
+                }
+            }
+        }
 
-    }, [])
+        fechData()
+    },[])
 
-    if (loading) return "Cargando...."
+    if (error) return <p>{error}</p>
 
     return (
-        <div>
-            {info ? (
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                    <p>{info.userId}</p>
-                    <p>{info.title}</p>
-                    <p>{info.id}</p>
-                </div>
-            ) : <div>"cargando"</div>}
-        </div>
-    )
+    <div>
+        {data ? (
+            <div>
+                <p>Id: {data.id}</p>
+                <p>Title: {data.title}</p>
+                <p>Completed: {data.completed ? "Completado" : "No completado"}</p>
+            </div>    
+        ): null}
+    </div>
+  )
 }
 
-export default ConsumerAPI
-
+export default ConsumerApi
