@@ -5,7 +5,7 @@
 
 - El objeto FormData es una forma de construir un conjunto de pares clave/valor representando los campos de un formulario y sus valores.
 
-```
+```tsx
 import { useRef, type FormEvent } from "react";
 
 const App = () => {

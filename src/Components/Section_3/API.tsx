@@ -11,11 +11,12 @@ const ConsumerApi = () => {
     const [data, setData] = useState<RootObject | null>(null)
     const [error, setError] = useState<string | null>(null)
 
+
     // Consumimos una API con useEffect y Async Await
     useEffect(() => {
         const fechData = async () => {
             try {
-                const res = await fetch("https://jsonplaceholder.typicode.com/todos/10000")
+                const res = await fetch("https://jsonplaceholder.typicode.com/todos/1")
                 if(!res.ok ) throw new Error("Error al consumir la API")
                 const data = await res.json()
                 setData(data)
@@ -26,7 +27,10 @@ const ConsumerApi = () => {
                 else {
                     setError("Error desconocido")
                 }
+            }finally{
+                console.log("Finally")
             }
+
         }
 
         fechData()
@@ -34,11 +38,12 @@ const ConsumerApi = () => {
 
     if (error) return <p>{error}</p>
 
+    console.log(data?.title)
     return (
     <div>
-        {data ? (
+        {data? (
             <div>
-                <p>Id: {data.id}</p>
+                <p>Id: {data?.id}</p>
                 <p>Title: {data.title}</p>
                 <p>Completed: {data.completed ? "Completado" : "No completado"}</p>
             </div>    

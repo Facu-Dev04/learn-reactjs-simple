@@ -13,8 +13,3 @@
 - Para pasar pasar a los formulario no controlados, tenemos que conocer el siguiente hook.
 
 - useRef : Este hook te permite acceder directamente a un elemento del DOM sin necesidad de usar el estado de ReactJS.
-
-```
-
-
-```

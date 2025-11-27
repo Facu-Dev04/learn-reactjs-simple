@@ -6,7 +6,7 @@
 
 - Dentro del codigo que vemos estamos haciendo a una referencia del DOM del input.  
 
-```
+```jsx
 import { useRef, type FormEvent } from "react"
 
 const UncontrollerForm = () => {
@@ -30,6 +30,3 @@ const UncontrollerForm = () => {
 export default UncontrollerForm
 ```
 
-
-
-### FormData
