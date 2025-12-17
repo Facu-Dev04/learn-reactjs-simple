@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+/* Estilos para contenido MDX */
+.prose {
+  @apply text-gray-800;
+}
+
+.prose p {
+  @apply mb-4 leading-7;
+}
+
+.prose h1 {
+  @apply text-3xl font-bold mb-4 mt-8;
+}
+
+.prose h2 {
+  @apply text-2xl font-bold mb-3 mt-6;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold mb-2 mt-4;
+}
+
+.prose ul, .prose ol {
+  @apply mb-4 ml-6;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+.prose code {
+  @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono;
+}
+
+.prose pre {
+  @apply bg-gray-900 text-white p-4 rounded-lg mb-4 overflow-x-auto;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0;
+}
+
+.prose a {
+  @apply text-blue-600 hover:text-blue-800 underline;
+}
+
+.prose strong {
+  @apply font-bold;
+}
+
+.prose em {
+  @apply italic;
+}

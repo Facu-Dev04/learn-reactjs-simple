@@ -1,5 +1,9 @@
+const { withContentlayer } = require("next-contentlayer");
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  reactStrictMode: true,
+  turbopack: {},
+};
 
-export default nextConfig;
-
+module.exports = withContentlayer(nextConfig);
