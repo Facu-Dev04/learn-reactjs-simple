@@ -1,8 +1,12 @@
 
-const layout = () => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>layout</div>
+    <html>
+      <body>
+        {children}
+      </body>
+    </html>
   )
 }
 
-export default layout
+export default RootLayout

@@ -1,8 +1,21 @@
+import './global.css'
 
-const layout = () => {
+export const metadata = {
+    title: 'Marketing',
+    description: 'Marketing',
+    icons: {
+        icon: '/vite.svg',
+    }
+}
+
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>layout</div>
+    <html>
+      <body>
+        {children}
+      </body>
+    </html>
   )
 }
 
-export default layout
+export default RootLayout

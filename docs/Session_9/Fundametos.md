@@ -57,9 +57,32 @@ npx create-next-app@latest my-next-app
 
 - Finalmente mientras el usuario va navegando por nuestra aplicacion, el enrutado va almacenado nuestra pagina en el cache del navegador, para que si el usuario vuelve a una pagina ya visitada, esta se cargue instantaneamente desde la cache sin necesidad de hacer una nueva solicitud al servidor.
 
-## page.tsx o page.jsx
+## Almacenamiento en cache
 
-Cree 
+- Next tiene la capacidad de poder almacenar la información en cache para que cuando tengamos que volvamos a esa misma pagina, no tengamos que pedir la informacion nuevamente al servidor. 
+
+- Ademas de eso Next js tiene el prefetching, que es una tecnica que permite que el navegador prediga que paginas va a necesitar el usuario y va a cargarlas en cache para que cuando el usuario las necesite, ya esten cargadas y no tenga que esperar a que se carguen.
+
+### Soft vs Hard Navigation
+
+- Hard Navigation: Es cuando la memoria cache se invalida y el servidor recupera los datos y vuelve a representar los segmentos modificados. 
+
+- Soft Navigation: Es cuando la memoria cache se mantiene y solo se actualizan los segmentos modificados. 
+
+### Condiciones para soft navigation
+
+- NextJS usara la navegacion suave si la ruta a la que navega pertenece a la misma ruta que la actual.
+
+- Si Navegas de `/dashboard/team-red/1` a `/dashboard/team-red/2`, NextJS usara la navegacion suave.
+
+- Si Navegas de `/dashboard/team-red/1` a `/dashboard/team-blue/1`, NextJS usara la navegacion dura.
+
+- Back/Forward Navigation: Este mismo sera una navegacion suave.
+
+## SEO
+
+- 
+
 
 
 
