@@ -1,0 +1,30 @@
+---
+title: Era del Routing en Next.js y Contentlayer
+description: Aprende los conceptos fundamentales de React Hooks y cómo useState y useEffect revolucionaron la forma de escribir componentes en React.
+date: 2024-11-15
+---
+
+# Era del Routing en Next.js y Contentlayer
+
+En la era de AppRouting todo se maneja atraves de las carpetas, facilitando la creacion de rutas y componentes.
+## El Poder del App Router
+
+La transición hacia el **App Router** ha marcado un antes y un después en el ecosistema de React. Ya no dependemos únicamente de una estructura plana en la carpeta `pages`; ahora, la jerarquía de carpetas define no solo la URL, sino también los layouts compartidos, las páginas de error y los estados de carga de forma declarativa y eficiente.
+
+## ¿Por qué Contentlayer?
+
+Gestionar archivos MDX localmente solía ser una tarea tediosa que requería configuraciones complejas. **Contentlayer** surge como la pieza que falta en el rompecabezas, actuando como un puente que transforma tus archivos de contenido en datos JSON listos para ser consumidos.
+
+### Ventajas Clave:
+
+- **Type-Safety:** Genera definiciones de TypeScript automáticamente basadas en tu configuración de contenido, eliminando errores de propiedades inexistentes.
+- **Rendimiento:** El procesamiento ocurre en tiempo de compilación, lo que garantiza que el servidor solo entregue lo estrictamente necesario.
+- **Experiencia de Desarrollo:** Al importar el contenido como si fuera un módulo de JavaScript, la integración con componentes de React es natural y fluida.
+
+## Sinergia en Proyectos Modernos
+
+Al combinar ambos, puedes construir sitios estáticos o dinámicos con una velocidad asombrosa. Utilizando funciones como `generateStaticParams` de Next.js junto con la base de datos de contenido que genera Contentlayer, es posible pre-renderizar cientos de páginas de blog con un control total sobre el SEO y el diseño, manteniendo un código limpio y fácil de escalar.
+
+
+
+

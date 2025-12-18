@@ -1,15 +1,310 @@
 ---
-title: 05 React Js es para todos
-description: React es una libreria para que podamos crear aplicaciones de manera eficiente, rápida y escalable.
-date: 2021-09-24
+title: Performance en React - Optimiza tus Componentes
+description: Aprende técnicas avanzadas para optimizar el rendimiento de tus aplicaciones React usando React.memo, useMemo, useCallback y más.
+date: 2024-12-10
 ---
 
-## React Js es para todos
+# Optimización de Performance en React
 
-React es una libreria para que podamos crear aplicaciones de manera eficiente, rápida y escalable. Gracias a React, podemos crear aplicaciones web que sean rápidas, fáciles de mantener y que tengan un excelente rendimiento.
+El rendimiento es crucial para una buena experiencia de usuario. Aunque React es rápido por defecto, aplicaciones complejas pueden necesitar optimizaciones. Veamos las técnicas más efectivas.
 
+## ¿Cuándo Optimizar?
 
-## Frameworks
+**Regla de oro**: No optimices prematuramente. Primero mide, luego optimiza.
 
-React tiene muchos frameworks que nos permiten crear aplicaciones web de manera rápida y eficiente, como Next.js, Gatsby, etc.
+### Herramientas de medición:
 
+1. **React DevTools Profiler** - Identifica componentes lentos
+2. **Chrome Performance Tab** - Análisis detallado de rendimiento
+3. **Lighthouse** - Métricas de performance web
+
+## 1. React.memo - Evita Re-renders Innecesarios
+
+`React.memo` es un Higher-Order Component que memoriza el resultado del componente.
+
+```javascript
+import { memo } from "react";
+
+// Sin optimización - se re-renderiza cada vez que el padre cambia
+function ProductoCard({ nombre, precio }) {
+  console.log("Renderizando:", nombre);
+  return (
+    <div>
+      <h3>{nombre}</h3>
+      <p>${precio}</p>
+    </div>
+  );
+}
+
+// Con React.memo - solo se re-renderiza si las props cambian
+const ProductoCardOptimizado = memo(function ProductoCard({ nombre, precio }) {
+  console.log("Renderizando:", nombre);
+  return (
+    <div>
+      <h3>{nombre}</h3>
+      <p>${precio}</p>
+    </div>
+  );
+});
+
+// Comparación personalizada
+const ProductoCardAvanzado = memo(ProductoCard, (prevProps, nextProps) => {
+  // Retorna true si las props son iguales (no re-renderizar)
+  return prevProps.id === nextProps.id;
+});
+```
+
+## 2. useMemo - Memoriza Cálculos Costosos
+
+`useMemo` memoriza el resultado de un cálculo costoso.
+
+```javascript
+import { useMemo, useState } from "react";
+
+function ListaProductos({ productos }) {
+  const [filtro, setFiltro] = useState("");
+
+  // ❌ Sin useMemo - se re-calcula en cada render
+  const productosFiltrados = productos.filter((p) =>
+    p.nombre.toLowerCase().includes(filtro.toLowerCase())
+  );
+
+  // ✅ Con useMemo - solo se re-calcula cuando cambian las dependencias
+  const productosFiltradosOptimizado = useMemo(() => {
+    console.log("Filtrando productos...");
+    return productos.filter((p) =>
+      p.nombre.toLowerCase().includes(filtro.toLowerCase())
+    );
+  }, [productos, filtro]); // Solo re-calcula si cambian productos o filtro
+
+  return (
+    <div>
+      <input
+        value={filtro}
+        onChange={(e) => setFiltro(e.target.value)}
+        placeholder="Buscar..."
+      />
+      {productosFiltradosOptimizado.map((p) => (
+        <ProductoCard key={p.id} {...p} />
+      ))}
+    </div>
+  );
+}
+```
+
+## 3. useCallback - Memoriza Funciones
+
+`useCallback` memoriza una función para evitar crear nuevas referencias en cada render.
+
+```javascript
+import { useCallback, useState } from "react";
+
+function Lista() {
+  const [items, setItems] = useState([1, 2, 3]);
+  const [contador, setContador] = useState(0);
+
+  // ❌ Sin useCallback - nueva función en cada render
+  const agregarItem = () => {
+    setItems([...items, items.length + 1]);
+  };
+
+  // ✅ Con useCallback - misma referencia de función
+  const agregarItemOptimizado = useCallback(() => {
+    setItems((prev) => [...prev, prev.length + 1]);
+  }, []); // Array vacío = función nunca cambia
+
+  // Con dependencia
+  const eliminarItem = useCallback((id) => {
+    setItems((prev) => prev.filter((item) => item !== id));
+  }, []); // No depende de 'items' porque usamos función updater
+
+  return (
+    <div>
+      <button onClick={() => setContador(contador + 1)}>
+        Contador: {contador}
+      </button>
+
+      {/* Este componente no se re-renderiza cuando contador cambia */}
+      <ListaItems
+        items={items}
+        onAgregar={agregarItemOptimizado}
+        onEliminar={eliminarItem}
+      />
+    </div>
+  );
+}
+
+const ListaItems = memo(function ListaItems({ items, onAgregar, onEliminar }) {
+  console.log("Renderizando ListaItems");
+  return (
+    <>
+      {items.map((item) => (
+        <div key={item}>
+          Item {item}
+          <button onClick={() => onEliminar(item)}>❌</button>
+        </div>
+      ))}
+      <button onClick={onAgregar}>Agregar Item</button>
+    </>
+  );
+});
+```
+
+## 4. Code Splitting - Carga Código Bajo Demanda
+
+Divide tu aplicación en chunks más pequeños que se cargan solo cuando se necesitan.
+
+```javascript
+import { lazy, Suspense } from "react";
+
+// Carga normal - se incluye en el bundle principal
+import PaginaInicio from "./pages/Inicio";
+
+// Lazy loading - se carga solo cuando se navega a esta ruta
+const PaginaPerfil = lazy(() => import("./pages/Perfil"));
+const PaginaConfiguracion = lazy(() => import("./pages/Configuracion"));
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<PaginaInicio />} />
+
+        <Route
+          path="/perfil"
+          element={
+            <Suspense fallback={<div>Cargando...</div>}>
+              <PaginaPerfil />
+            </Suspense>
+          }
+        />
+
+        <Route
+          path="/config"
+          element={
+            <Suspense fallback={<div>Cargando...</div>}>
+              <PaginaConfiguracion />
+            </Suspense>
+          }
+        />
+      </Routes>
+    </Router>
+  );
+}
+```
+
+## 5. Virtualización de Listas Largas
+
+Para listas con cientos o miles de items, usa virtualización con `react-window` o `react-virtual`.
+
+```javascript
+import { FixedSizeList } from "react-window";
+
+function ListaGrande({ items }) {
+  // Solo renderiza los items visibles en el viewport
+  return (
+    <FixedSizeList
+      height={600} // Altura del contenedor
+      itemCount={items.length}
+      itemSize={50} // Altura de cada item
+      width="100%"
+    >
+      {({ index, style }) => (
+        <div style={style}>Item {items[index].nombre}</div>
+      )}
+    </FixedSizeList>
+  );
+}
+```
+
+## 6. Debouncing para Inputs
+
+Evita ejecutar funciones costosas en cada keystroke.
+
+```javascript
+import { useState, useCallback } from "react";
+import { debounce } from "lodash";
+
+function BuscadorProductos() {
+  const [resultados, setResultados] = useState([]);
+
+  // Esta función solo se ejecuta 300ms después del último keystroke
+  const buscar = useCallback(
+    debounce(async (query) => {
+      const response = await fetch(`/api/buscar?q=${query}`);
+      const data = await response.json();
+      setResultados(data);
+    }, 300),
+    []
+  );
+
+  return (
+    <input
+      onChange={(e) => buscar(e.target.value)}
+      placeholder="Buscar productos..."
+    />
+  );
+}
+```
+
+## 7. useTransition - Prioriza Updates (React 18+)
+
+```javascript
+import { useState, useTransition } from "react";
+
+function BuscadorComplejo() {
+  const [query, setQuery] = useState("");
+  const [resultados, setResultados] = useState([]);
+  const [isPending, startTransition] = useTransition();
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setQuery(value); // Update urgente - UI responsive
+
+    // Update no urgente - puede ser interrumpido
+    startTransition(() => {
+      const resultadosFiltrados = buscarEnGranDataset(value);
+      setResultados(resultadosFiltrados);
+    });
+  };
+
+  return (
+    <>
+      <input value={query} onChange={handleChange} />
+      {isPending && <div>Buscando...</div>}
+      <Resultados items={resultados} />
+    </>
+  );
+}
+```
+
+## Checklist de Optimización
+
+### ✅ Antes de optimizar:
+
+1. Mide con React DevTools Profiler
+2. Identifica componentes que se re-renderiza innecesariamente
+3. Busca cálculos costosos en render
+
+### ✅ Técnicas de optimización:
+
+1. `React.memo` para componentes que reciben mismas props frecuentemente
+2. `useMemo` para cálculos costosos
+3. `useCallback` para funciones pasadas como props a componentes memorizados
+4. `lazy` + `Suspense` para code splitting
+5. Virtualización para listas largas
+6. Debouncing para inputs de búsqueda
+
+### ❌ Evita:
+
+- Usar `React.memo` en todos los componentes sin medir
+- `useMemo`/`useCallback` en cálculos/funciones simples
+- Optimización prematura
+
+## Conclusión
+
+La optimización de performance es un arte que requiere balance. Demasiada optimización puede hacer tu código complejo y difícil de mantener. Demasiada poca puede resultar en una app lenta.
+
+**La clave es medir primero, optimizar después**, y siempre enfocarte en los problemas reales que afectan a tus usuarios.
+
+¿Qué técnicas de optimización has usado? ¡Comparte tu experiencia!

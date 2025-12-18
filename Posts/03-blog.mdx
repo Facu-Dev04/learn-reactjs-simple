@@ -1,19 +1,250 @@
 ---
-title: 03 Lorem Ipsum
-description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-date: 2021-09-24
+title: TypeScript con React - Guía Completa para Principiantes
+description: Aprende cómo TypeScript mejora tu desarrollo en React con tipado estático, mejor autocompletado y menos errores en producción.
+date: 2024-12-05
 ---
 
-Ullamco et nostrud magna commodo nostrud occaecat quis pariatur id ipsum. Ipsum
-consequat enim id excepteur consequat nostrud esse esse fugiat dolore.
-Reprehenderit occaecat exercitation non cupidatat in eiusmod laborum ex eu
-fugiat aute culpa pariatur. Irure elit proident consequat veniam minim ipsum ex
-pariatur.
+# TypeScript con React: Por Qué y Cómo Usarlo
 
-## Esto es un titulo de nivel 2
+**TypeScript** se ha convertido en el estándar de facto para aplicaciones React modernas. En este post, exploraremos por qué deberías usarlo y cómo comenzar.
 
-Mollit nisi cillum exercitation minim officia velit laborum non Lorem
-adipisicing dolore. Labore commodo consectetur commodo velit adipisicing irure
-dolore dolor reprehenderit aliquip. Reprehenderit cillum mollit eiusmod
-excepteur elit ipsum aute pariatur in. Cupidatat ex culpa velit culpa ad non
-labore exercitation irure laborum.
+## ¿Por Qué TypeScript?
+
+### Beneficios principales:
+
+1. **Detecta errores antes de ejecutar el código**
+2. **Mejor experiencia de desarrollo** (autocompletado inteligente)
+3. **Documentación viva** en tu código
+4. **Refactorización más segura**
+5. **Mejor colaboración** en equipos grandes
+
+## Configurando TypeScript en React
+
+### Con Create React App:
+
+```bash
+npx create-react-app mi-app --template typescript
+```
+
+### Con Next.js:
+
+```bash
+npx create-next-app@latest mi-app --typescript
+```
+
+### Con Vite:
+
+```bash
+npm create vite@latest mi-app -- --template react-ts
+```
+
+## Tipos Básicos para Props
+
+### Componente Funcional con Props
+
+```typescript
+// ❌ JavaScript - Sin tipos
+function Saludo({ nombre }) {
+  return <h1>Hola {nombre}</h1>;
+}
+
+// ✅ TypeScript - Con tipos
+interface SaludoProps {
+  nombre: string;
+  edad?: number; // ? = opcional
+  activo?: boolean;
+}
+
+function Saludo({ nombre, edad, activo = true }: SaludoProps) {
+  return (
+    <div>
+      <h1>Hola {nombre}</h1>
+      {edad && <p>Tienes {edad} años</p>}
+      {activo && <span>✅ Activo</span>}
+    </div>
+  );
+}
+```
+
+## Tipos Comunes en React
+
+### 1. **Props con Hijos (children)**
+
+```typescript
+interface ContainerProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+function Container({ children, className }: ContainerProps) {
+  return <div className={className}>{children}</div>;
+}
+```
+
+### 2. **Event Handlers**
+
+```typescript
+interface FormularioProps {
+  onSubmit: (datos: { email: string; password: string }) => void;
+}
+
+function Formulario({ onSubmit }: FormularioProps) {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // ...
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+  };
+
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+```
+
+### 3. **useState con TypeScript**
+
+```typescript
+// Tipo inferido automáticamente
+const [count, setCount] = useState(0); // number
+
+// Tipo explícito necesario para valores complejos
+interface User {
+  id: number;
+  nombre: string;
+  email: string;
+}
+
+const [user, setUser] = useState<User | null>(null);
+
+// Para arrays
+const [users, setUsers] = useState<User[]>([]);
+```
+
+### 4. **useRef con TypeScript**
+
+```typescript
+import { useRef } from "react";
+
+function InputFocus() {
+  // Para elementos del DOM
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    inputRef.current?.focus(); // ?. = optional chaining
+  };
+
+  return (
+    <>
+      <input ref={inputRef} type="text" />
+      <button onClick={focusInput}>Enfocar Input</button>
+    </>
+  );
+}
+```
+
+## Props Avanzadas
+
+### Componentes que aceptan múltiples tipos de hijos
+
+```typescript
+type CardProps = {
+  titulo: string;
+  children: React.ReactNode;
+} & ({ tipo: "info"; icono?: string } | { tipo: "peligro"; mensaje: string });
+
+function Card(props: CardProps) {
+  if (props.tipo === "peligro") {
+    // TypeScript sabe que 'mensaje' existe aquí
+    return <div className="danger">{props.mensaje}</div>;
+  }
+
+  return <div className="info">{props.titulo}</div>;
+}
+```
+
+### Genéricos en Componentes
+
+```typescript
+interface ListaProps<T> {
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+}
+
+function Lista<T>({ items, renderItem }: ListaProps<T>) {
+  return (
+    <ul>
+      {items.map((item, index) => (
+        <li key={index}>{renderItem(item)}</li>
+      ))}
+    </ul>
+  );
+}
+
+// Uso
+<Lista items={[1, 2, 3]} renderItem={(num) => <span>{num * 2}</span>} />;
+```
+
+## Tipos Utilitarios de TypeScript
+
+```typescript
+interface Usuario {
+  id: number;
+  nombre: string;
+  email: string;
+  password: string;
+}
+
+// Partial - Hace todas las propiedades opcionales
+type UsuarioParcial = Partial<Usuario>;
+
+// Omit - Excluye propiedades
+type UsuarioPublico = Omit<Usuario, "password">;
+
+// Pick - Selecciona solo ciertas propiedades
+type UsuarioLogin = Pick<Usuario, "email" | "password">;
+
+// Required - Hace todas las propiedades requeridas
+type UsuarioCompleto = Required<Usuario>;
+```
+
+## Errores Comunes y Soluciones
+
+### Error: "Type 'null' is not assignable"
+
+```typescript
+// ❌ Problema
+const [data, setData] = useState(null);
+
+// ✅ Solución
+const [data, setData] = useState<Data | null>(null);
+```
+
+### Error: "Property does not exist on type"
+
+```typescript
+// ❌ Problema
+const handleClick = (e) => {
+  // 'e' es tipo 'any'
+  console.log(e.target.value);
+};
+
+// ✅ Solución
+const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  console.log(e.currentTarget.textContent);
+};
+```
+
+## Mejores Prácticas
+
+1. ✅ **Usa `interface` para definir props** (más extensible)
+2. ✅ **Evita `any`** - pierde todos los beneficios de TypeScript
+3. ✅ **Usa tipos de React** (`React.FC` se desaconseja ahora)
+4. ✅ **Aprovecha la inferencia** - no sobre-especifiques tipos
+5. ✅ **Crea types reutilizables** para objetos comunes
+
+## Conclusión
+
+TypeScript puede parecer abrumador al principio, pero los beneficios superan ampliamente el tiempo de aprendizaje. Comienza con lo básico: tipar tus props y estados, y gradualmente incorpora características más avanzadas.
+
+**Consejo**: No intentes aprender todo TypeScript de una vez. Empieza con un proyecto pequeño y ve agregando tipos según los necesites. ¡Tu yo del futuro te lo agradecerá!

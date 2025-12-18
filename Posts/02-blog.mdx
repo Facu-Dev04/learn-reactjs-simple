@@ -1,19 +1,170 @@
 ---
-title: 02 Lorem Ipsum
-description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-date: 2021-10-24
+title: Next.js App Router - La Nueva Era del Routing en Next.js
+description: Descubre cómo Next.js 13+ revolucionó el routing con el App Router, Server Components y las nuevas convenciones de archivos.
+date: 2024-11-28
 ---
 
-Ullamco et nostrud magna commodo nostrud occaecat quis pariatur id ipsum. Ipsum
-consequat enim id excepteur consequat nostrud esse esse fugiat dolore.
-Reprehenderit occaecat exercitation non cupidatat in eiusmod laborum ex eu
-fugiat aute culpa pariatur. Irure elit proident consequat veniam minim ipsum ex
-pariatur.
+# Next.js App Router: La Nueva Era del Routing
 
-## Esto es un titulo de nivel 2
+Con Next.js 13, Vercel introdujo el **App Router**, una nueva forma de estructurar aplicaciones que aprovecha las últimas características de React, incluyendo Server Components y Streaming.
 
-Mollit nisi cillum exercitation minim officia velit laborum non Lorem
-adipisicing dolore. Labore commodo consectetur commodo velit adipisicing irure
-dolore dolor reprehenderit aliquip. Reprehenderit cillum mollit eiusmod
-excepteur elit ipsum aute pariatur in. Cupidatat ex culpa velit culpa ad non
-labore exercitation irure laborum.
+## Pages Router vs App Router
+
+### Pages Router (Antiguo)
+
+```
+pages/
+  index.js          → /
+  about.js          → /about
+  posts/[id].js     → /posts/:id
+```
+
+### App Router (Nuevo)
+
+```
+app/
+  page.js           → /
+  about/page.js     → /about
+  posts/[id]/page.js → /posts/:id
+```
+
+## Características Principales
+
+### 1. **Server Components por Defecto**
+
+En el App Router, todos los componentes son Server Components por defecto. Esto significa que se renderizan en el servidor, reduciendo el JavaScript enviado al cliente.
+
+```javascript
+// app/posts/page.js
+// Este es un Server Component por defecto
+export default async function PostsPage() {
+  // Puedes hacer fetch directamente en el componente
+  const posts = await fetch("https://api.example.com/posts").then((res) =>
+    res.json()
+  );
+
+  return (
+    <div>
+      <h1>Posts</h1>
+      {posts.map((post) => (
+        <article key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.excerpt}</p>
+        </article>
+      ))}
+    </div>
+  );
+}
+```
+
+### 2. **Layouts y Templates**
+
+Los layouts te permiten compartir UI entre múltiples páginas:
+
+```javascript
+// app/layout.js
+export default function RootLayout({ children }) {
+  return (
+    <html lang="es">
+      <body>
+        <header>Mi Sitio</header>
+        <main>{children}</main>
+        <footer>© 2024</footer>
+      </body>
+    </html>
+  );
+}
+```
+
+### 3. **Loading y Error States**
+
+Archivos especiales para manejar estados de carga y errores:
+
+```javascript
+// app/posts/loading.js
+export default function Loading() {
+  return <div>Cargando posts...</div>;
+}
+
+// app/posts/error.js
+'use client';
+
+export default function Error({ error, reset }) {
+  return (
+    <div>
+      <h2>Algo salió mal!</h2>
+      <button onClick={() => reset()}>Intentar de nuevo</button>
+    </div>
+  );
+}
+```
+
+### 4. **Rutas Dinámicas Mejoradas**
+
+```javascript
+// app/posts/[slug]/page.js
+export default async function Post({ params }) {
+  const { slug } = await params;
+  const post = await getPost(slug);
+
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+    </article>
+  );
+}
+
+// Genera rutas estáticas en build time
+export async function generateStaticParams() {
+  const posts = await getPosts();
+
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+```
+
+### 5. **Route Groups**
+
+Organiza tus rutas sin afectar la URL:
+
+```
+app/
+  (marketing)/
+    about/page.js    → /about
+    contact/page.js  → /contact
+  (shop)/
+    products/page.js → /products
+    cart/page.js     → /cart
+```
+
+## Ventajas del App Router
+
+✅ **Mejor rendimiento**: Server Components reducen el JavaScript del cliente
+✅ **Streaming**: Las páginas se cargan progresivamente
+✅ **Layouts anidados**: Menos re-renders innecesarios
+✅ **Data fetching mejorado**: Fetch directo en componentes sin getServerSideProps
+✅ **SEO optimizado**: Todo se renderiza en el servidor por defecto
+
+## Client Components
+
+Cuando necesitas interactividad, usa la directiva `'use client'`:
+
+```javascript
+"use client";
+
+import { useState } from "react";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+
+  return <button onClick={() => setCount(count + 1)}>Contador: {count}</button>;
+}
+```
+
+## Conclusión
+
+El App Router representa una evolución natural de Next.js. Aunque tiene una curva de aprendizaje, las ventajas en rendimiento, experiencia de desarrollo y capacidades modernas lo hacen la opción recomendada para nuevos proyectos.
+
+¿Ya estás usando App Router en tus proyectos? ¡Comparte tu experiencia en los comentarios!
