@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/app/%28admin%29/layout.tsx"],"sourcesContent":["\r\nconst layout = () => {\r\n  return (\r\n    <div>layout</div>\r\n  )\r\n}\r\n\r\nexport default layout"],"names":[],"mappings":"wEACe,IAEX,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI"}

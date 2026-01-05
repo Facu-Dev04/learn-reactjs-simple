@@ -1,6 +1,5 @@
 import { useFetch } from "./hooks/useFetch"
 
-
 const API = () => {
 
     const {data, error, loading} = useFetch()

@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../../../src/app/%28auth%29/login/page.tsx"],"sourcesContent":["\r\nconst page = () => {\r\n  return (\r\n    <div>page</div>\r\n  )\r\n}\r\n\r\nexport default page"],"names":[],"mappings":"8MACa,IAET,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI"}
