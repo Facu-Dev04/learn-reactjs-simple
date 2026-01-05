@@ -1,3 +1,5 @@
+// app/(marketing)/blog/posts/[slug]/page.tsx
+
 import { allPosts } from "contentlayer/generated";
 import { Props } from "@/Components/Section_10/interfaces/typesPosts";
 import Post from "@/Components/Section_10/Components/Posts";
@@ -33,6 +35,7 @@ const PostLayout = async ({ params }: Props) => {
     notFound();
   }
 
+  // Pasar todo el objeto post, el MDXLoader ya lo maneja en el cliente
   return <Post post={post} />;
 };
 

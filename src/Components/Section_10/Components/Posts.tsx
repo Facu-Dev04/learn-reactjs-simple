@@ -1,7 +1,14 @@
 "use client";
 
 import { Post as PostType } from "contentlayer/generated";
-import { MDXContent } from "../MDXContent";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+
+// Importar MDXLoader sin SSR
+const MDXLoader = dynamic(() => import("../MDXContent").then(mod => ({ default: mod.MDXLoader })), {
+  ssr: false,
+  loading: () => <div className="animate-pulse">Cargando contenido...</div>,
+});
 
 interface PostProps {
   post: PostType;
@@ -22,7 +29,9 @@ const Post = ({ post }: PostProps) => {
       </div>
 
       <div className="prose prose-lg max-w-none">
-        <MDXContent code={post.body.code} />
+        <Suspense fallback={<div className="animate-pulse">Cargando contenido...</div>}>
+          <MDXLoader mdxComponent={post.body.code} />
+        </Suspense>
       </div>
     </article>
   );
