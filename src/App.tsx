@@ -1,11 +1,10 @@
-import ConsumerApi from "./Components/Section_3/API"
+import AppConsumer from "./example/Components/App";
 
 const App = () => {
   return (
-    <div>
-      <h1>llamado a una API</h1>
-      <ConsumerApi />
+    <div className="">
+      <AppConsumer />
     </div>
-  )
-}
-export default App
+  );
+};
+export default App;
